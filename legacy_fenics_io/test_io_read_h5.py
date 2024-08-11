@@ -24,6 +24,8 @@ def main(args):
     OUTPUT_DIR = "output"
     MESHFILE = os.path.join(OUTPUT_DIR, "box.xdmf")
     H5FILE = os.path.join(OUTPUT_DIR, "test_h5.h5")
+    H5FILE_1 = os.path.join(OUTPUT_DIR, "test_mult_1_h5.h5")
+    H5FILE_2 = os.path.join(OUTPUT_DIR, "test_mult_2_h5.h5")
     NAME_2_READ = "test"
 
     SEP = 80*"#"
@@ -64,7 +66,26 @@ def main(args):
     assert l2_error < 1e-12, "HDF5 read back of second checkpoint failed."
 
     root_print(COMM, "Read back from HDF5 was: SUCCESSFUL.")
+    
+    # Load the solution back from separate HDF5 files, using only the mesh from the first.
+    uh5.vector().zero()
+    u2h5.vector().zero()
+    
+    with dl.HDF5File(COMM, H5FILE_1, "r") as fid:
+        fid.read(uh5, NAME_2_READ)
+        
+    with dl.HDF5File(COMM, H5FILE_2, "r") as fid:
+        fid.read(u2h5, f"{NAME_2_READ}_2")
+    
+    l2_error = compute_l2_error(uh5, u1true)
+    assert l2_error < 1e-12, "HDF5 read back of first checkpoint failed."
+
+    l2_error = compute_l2_error(u2h5, u2true)
+    assert l2_error < 1e-12, "HDF5 read back of second checkpoint failed."
+
+    root_print(COMM, "Read back from separate HDF5 was: SUCCESSFUL.")
     root_print(COMM, SEP)
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test reading from XDMF and HDF5.")

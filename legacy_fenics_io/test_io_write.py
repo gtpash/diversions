@@ -17,6 +17,8 @@ OUTPUT_DIR = "output"
 MESHFILE = os.path.join(OUTPUT_DIR, "box.xdmf")
 XDMFFILE = os.path.join(OUTPUT_DIR, "test_xdmf.xdmf")
 H5FILE = os.path.join(OUTPUT_DIR, "test_h5.h5")
+H5FILE_1 = os.path.join(OUTPUT_DIR, "test_mult_1_h5.h5")
+H5FILE_2 = os.path.join(OUTPUT_DIR, "test_mult_2_h5.h5")
 NAME_2_READ = "test"
 
 SEP = 80*"#"
@@ -51,6 +53,15 @@ with dl.XDMFFile(COMM, XDMFFILE) as fid:
 with dl.HDF5File(COMM, H5FILE, "w") as fid:
     fid.write(mesh, "mesh")
     fid.write(u, NAME_2_READ)
+    fid.write(u2, f"{NAME_2_READ}_2")
+    
+# write solution to multiple HDF5 files.
+with dl.HDF5File(COMM, H5FILE_1, "w") as fid:
+    fid.write(mesh, "mesh")
+    fid.write(u, NAME_2_READ)
+
+with dl.HDF5File(COMM, H5FILE_2, "w") as fid:
+    fid.write(mesh, "mesh")
     fid.write(u2, f"{NAME_2_READ}_2")
     
 root_print(COMM, SEP)
