@@ -28,5 +28,5 @@ mpirun -np 7 python3 test_mixed_io_read.py --read_mesh
 ```
 
 ### Notes
-It is important to use a `dl.FunctionAssigner` to assign the individual components of the mixed element appropriately by interpolating a known function on to each individual function space comprising the mixed space.
-
+- It is important to use a `dl.FunctionAssigner` to assign the individual components of the mixed element appropriately by interpolating a known function on to each individual function space comprising the mixed space.
+- These scripts also demonstrate the need to read the mesh back from the same file as the data. When reading the mesh from the saved `.xdmf` file, the mesh partitioner may be inconsistent and lead to garbage.

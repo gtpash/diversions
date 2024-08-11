@@ -22,6 +22,7 @@ NAME_2_READ = "test"
 SEP = 80*"#"
 root_print(COMM, SEP)
 root_print(COMM, f"There are {nproc} processes in total.")
+root_print(COMM, f"The mesh file will be written to {MESHFILE}.")
 root_print(COMM, f"The HDF5 file will be written to {H5FILE}.")
 
 # mesh = dl.UnitCubeMesh(COMM, 10, 10, 10)

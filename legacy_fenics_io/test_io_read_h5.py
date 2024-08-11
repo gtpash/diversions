@@ -2,6 +2,7 @@
 # This script is intended to test parallel I/O for legacy FEniCS
 ##################################################
 
+import os
 import argparse
 from mpi4py import MPI
 import dolfin as dl
@@ -20,7 +21,9 @@ def main(args):
     nproc = COMM.size
 
     # General setup.
-    H5FILE = "test_h5.h5"
+    OUTPUT_DIR = "output"
+    MESHFILE = os.path.join(OUTPUT_DIR, "box.xdmf")
+    H5FILE = os.path.join(OUTPUT_DIR, "test_h5.h5")
     NAME_2_READ = "test"
 
     SEP = 80*"#"
@@ -32,7 +35,10 @@ def main(args):
         with dl.HDF5File(COMM, H5FILE, "r") as fid:
             fid.read(mesh, "mesh", False)
     else:
-        mesh = dl.UnitSquareMesh(COMM, 10, 10)
+        mesh = dl.Mesh()
+        with dl.XDMFFile(COMM, MESHFILE) as fid:
+            fid.read(mesh)
+        # mesh = dl.UnitSquareMesh(COMM, 10, 10)
     
     # set up function space and true solutions.
     Vh = dl.FunctionSpace(mesh, "CG", 1)
