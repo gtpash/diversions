@@ -2,6 +2,7 @@
 # This script is intended to test parallel I/O for legacy FEniCS
 ##################################################
 
+import os
 from mpi4py import MPI
 import dolfin as dl
 import ufl
@@ -13,8 +14,9 @@ rank = COMM.rank
 nproc = COMM.size
 
 # General setup.
-XDMFFILE = "test_mixed_xdmf.xdmf"
-H5FILE = "test_mixed_h5.h5"
+OUTPUT_DIR = "output"
+MESHFILE = os.path.join(OUTPUT_DIR, "box.xdmf")
+H5FILE = os.path.join(OUTPUT_DIR, "test_mixed_h5.h5")
 NAME_2_READ = "test"
 
 SEP = 80*"#"
@@ -24,6 +26,11 @@ root_print(COMM, f"The HDF5 file will be written to {H5FILE}.")
 
 # mesh = dl.UnitCubeMesh(COMM, 10, 10, 10)
 mesh = dl.UnitSquareMesh(COMM, 10, 10)
+
+# write the mesh to file.
+with dl.XDMFFile(COMM, MESHFILE) as fid:
+    fid.write(mesh)
+
 Vh = dl.FunctionSpace(mesh, "CG", 1)
 mixed_element = ufl.MixedElement([Vh.ufl_element(), Vh.ufl_element()])
 Vhm = dl.FunctionSpace(mesh, mixed_element)
