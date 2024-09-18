@@ -13,7 +13,7 @@ mpirun -np 3 python3 test_io_read_xdmf.py
 ```
 This may pass in serial, but likely fails in parallel. Alternatively, one may test HDF5 functionality similarly:
 ```
-mpirun -np 3 python3 test_io_read_h5.py
+mpirun -np 3 python3 test_io_read_h5.py --read_mesh
 ```
 HDF5 should succeed.
 

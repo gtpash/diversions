@@ -3,12 +3,13 @@
 ##################################################
 
 import os
-from mpi4py import MPI
 import dolfin as dl
+from mpi4py import MPI  # MUST be imported AFTER dolfin
 from utils import root_print
 
 # MPI setup.
-COMM = MPI.COMM_WORLD
+# COMM = MPI.COMM_WORLD
+COMM = dl.MPI.comm_world  # may be better to use the built in
 rank = COMM.rank
 nproc = COMM.size
 

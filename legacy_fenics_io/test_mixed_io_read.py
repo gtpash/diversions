@@ -4,8 +4,8 @@
 
 import os
 import argparse
-from mpi4py import MPI
 import dolfin as dl
+from mpi4py import MPI  # MUST be imported AFTER dolfin
 import ufl
 import numpy as np
 from utils import root_print
@@ -15,8 +15,9 @@ def compute_l2_error(u, u_true):
     return l2_error
 
 def main(args):
-# MPI setup.
+    # MPI setup.
     COMM = MPI.COMM_WORLD
+    # COMM = dl.MPI.comm_world  # may be better to use the built in
     rank = COMM.rank
     nproc = COMM.size
 
